@@ -39,10 +39,10 @@ VHD2VL_FILES = \
 ../hdl/vga2dvid.vhd \
 ../hdl/tmds_encoder.vhd \
 
-VHDL_FILES = $(VHD2VL_FILES)
-#VHDL_FILES = \
-#../hdl/max1112x_init_pack.vhd \
-#../hdl/max1112x_reader_array.vhd \
+#VHDL_FILES = $(VHD2VL_FILES)
+VHDL_FILES = \
+../hdl/max1112x_init_pack.vhd \
+../hdl/max1112x_reader_dummy.vhd \
 
 # synthesis options
 YOSYS_OPTIONS = -abc9
@@ -53,4 +53,4 @@ NEXTPNR_OPTIONS = --router router2 --timing-allow-fail --ignore-loops
 SCRIPTS = ../scripts
 include $(SCRIPTS)/diamond_path.mk
 include $(SCRIPTS)/trellis_path.mk
-include $(SCRIPTS)/trellis_main.mk
+include $(SCRIPTS)/trellis_main_ghdl.mk

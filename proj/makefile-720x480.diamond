@@ -24,6 +24,7 @@ OPENOCD_INTERFACE=$(SCRIPTS)/ft231x.ocd
 
 # ******* design files *******
 #CONSTRAINTS = ../constraints/ulx3s_v20.lpf
+#CONSTRAINTS = ../constraints/ulx3s_v314.lpf
 CONSTRAINTS = ../constraints/ulx3s_v316.lpf
 TOP_MODULE = top_memtest_emi
 TOP_MODULE_FILE = ../hdl/top/$(TOP_MODULE).v

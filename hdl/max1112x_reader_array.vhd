@@ -71,7 +71,7 @@ begin
               -- HACK:: (14 downto 13) works for 4ch when every 2nd ADC channel
               -- is enabled, as always is for bipolar (differential) mode.
               -- for unipolar 8ch (single-ended) mode, (14 downto 12) should be used.
-              R_data_array(conv_integer(R_bus_data(14 downto 13))) <= R_bus_data(11 downto 12-C_bits);
+              R_data_array(conv_integer(R_bus_data(14 downto 13))) <= unsigned(R_bus_data(11 downto 12-C_bits));
               R_bus_data <= C_max1112x_init_seq(conv_integer(R_init_cnt(R_init_cnt'high downto C_lsb_bits)));
             elsif R_init_cnt(C_shift_condition'range) = C_shift_condition then -- shift one bit to the right
               R_bus_data <= R_bus_data(R_bus_data'high-1 downto 0) & spi_miso;
@@ -112,6 +112,6 @@ begin
   spi_mosi <= R_bus_data(R_bus_data'high); -- data MSB always to MOSI output
   dv <= R_dv;
   G_output: for i in 0 to C_channels-1 generate
-    data(C_bits*(i+1)-1 downto C_bits*i) <= R_data_array(i);
+    data(C_bits*(i+1)-1 downto C_bits*i) <= std_logic_vector(R_data_array(i));
   end generate G_output;
 end rtl;

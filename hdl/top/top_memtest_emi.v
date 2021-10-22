@@ -82,6 +82,7 @@ module top_memtest_emi
     wire clk_pixel = clocks[1];
     wire clk_sys   = clocks[2];
     wire clk_gui   = clk_pixel;
+    wire clk_adc   = clk_pixel;
 
     wire [7:0] S_phase;
     btn_ecp5pll_phase

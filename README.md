@@ -8,3 +8,4 @@ With DIP SW enable:
 |  ESP32  |  GPDI   |  SDRAM  |   ADC   |
 
 To test ADC press BTN1 or BTN2.
+To shift SDRAM phase, press BTN5 (cursor left) or BTN6 (cursor right)

@@ -23,6 +23,7 @@ OPENOCD_INTERFACE=$(SCRIPTS)/ft231x.ocd
 CONSTRAINTS = ../constraints/ulx3s_v316.lpf
 TOP_MODULE = top_memtest_emi
 TOP_MODULE_FILE = ../hdl/top/$(TOP_MODULE).v
+TOP_VHDL_MODULE = vga2dvid
 
 VERILOG_FILES = \
   $(TOP_MODULE_FILE) \
@@ -47,4 +48,4 @@ NEXTPNR_OPTIONS = --router router2 --timing-allow-fail --ignore-loops
 SCRIPTS = ../scripts
 include $(SCRIPTS)/diamond_path.mk
 include $(SCRIPTS)/trellis_path.mk
-include $(SCRIPTS)/trellis_main.mk
+include $(SCRIPTS)/trellis_main_ghdl.mk

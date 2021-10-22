@@ -183,10 +183,12 @@ module top_memtest_emi
     // VGA to digital video converter
     wire [1:0] tmds[3:0];
     vga2dvid
+    /*
     #(
       .c_depth(2),
       .c_ddr(C_ddr)
     )
+    */
     vga2dvid_instance
     (
       .clk_pixel(clk_pixel),

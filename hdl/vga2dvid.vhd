@@ -48,10 +48,10 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity vga2dvid is
 	Generic (
 		c_shift_clock_synchronizer: std_logic := '1'; -- try to get out_clock in sync with clk_pixel
-	        c_parallel: std_logic := '1'; -- default output parallel data
+	        c_parallel: std_logic := '0'; -- default output parallel data
 	        c_serial: std_logic := '1'; -- default output serial data
-		c_ddr: std_logic := '0'; -- default use SDR for serial data
-		c_depth	: integer := 8
+		c_ddr: std_logic := '1'; -- default use SDR for serial data
+		c_depth	: integer := 2
 	);
 	Port (
 		clk_pixel    : in STD_LOGIC; -- VGA pixel clock, 25 MHz for 640x480

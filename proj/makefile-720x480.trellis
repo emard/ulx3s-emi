@@ -42,7 +42,7 @@ VHD2VL_FILES = \
 #VHDL_FILES = $(VHD2VL_FILES)
 VHDL_FILES = \
 ../hdl/max1112x_init_pack.vhd \
-../hdl/max1112x_reader_dummy.vhd \
+../hdl/max1112x_reader_array.vhd \
 
 # synthesis options
 YOSYS_OPTIONS = -abc9

@@ -71,7 +71,17 @@ begin
               -- HACK:: (14 downto 13) works for 4ch when every 2nd ADC channel
               -- is enabled, as always is for bipolar (differential) mode.
               -- for unipolar 8ch (single-ended) mode, (14 downto 12) should be used.
-              R_data_array(conv_integer(R_bus_data(14 downto 13))) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              -- FIXME following line trellis won't compile
+              --R_data_array(conv_integer(R_bus_data(14 downto 13))) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              if    R_bus_data(14 downto 13) = "00" then
+                R_data_array(0) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              elsif R_bus_data(14 downto 13) = "01" then
+                R_data_array(1) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              elsif R_bus_data(14 downto 13) = "10" then
+                R_data_array(2) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              elsif R_bus_data(14 downto 13) = "11" then
+                R_data_array(3) <= unsigned(R_bus_data(11 downto 12-C_bits));
+              end if;
               R_bus_data <= C_max1112x_init_seq(conv_integer(R_init_cnt(R_init_cnt'high downto C_lsb_bits)));
             elsif R_init_cnt(C_shift_condition'range) = C_shift_condition then -- shift one bit to the right
               R_bus_data <= R_bus_data(R_bus_data'high-1 downto 0) & spi_miso;

@@ -198,9 +198,8 @@ module top_memtest_emi
     );
     assign sdram_cke = sw[2]; // DIP SW 3 enables SDRAM
 
-    // most important info is failcount - lower 8 bits shown on LEDs
-    //assign led = failcount[7:0];
-    //assign led[7:4] = 0;
+    // failcount - lower bits shown on LEDs
+    assign led[7:4] = failcount[3:0];
     // show DIP SW position on LEDs
     // order them as physically located
     assign led[3:0] = {sw_wifi, sw_video, sw_sdram, sw_adc};

@@ -57,8 +57,14 @@ module top_memtest_emi
                                       + (C_clk_sdram_10MHz  % 10) * 'h10
                                       + (C_clk_sdram_1MHz   % 10);
 
-    // DIP SW 1 enables wifi
-    assign wifi_en    = sw[0];
+    // DIP SW names
+    wire sw_wifi  = sw[0]; // 1
+    wire sw_video = sw[1]; // 2
+    wire sw_sdram = sw[2]; // 3
+    wire sw_adc   = sw[3]; // 4
+
+    // ESP32 simple passthru
+    assign wifi_en    = sw_wifi;
     assign wifi_rxd   = ftdi_txd;
     assign ftdi_rxd   = wifi_txd;
 
@@ -129,6 +135,7 @@ module top_memtest_emi
 
 ///////////////////////////////////////////////////////////////////
 
+    // SDRAM TEST
     wire [31:0] passcount, failcount;
 
     reg resetn;
@@ -160,8 +167,8 @@ module top_memtest_emi
     //assign led = failcount[7:0];
     assign led[7:4] = 0;
     // show DIP SW position on LEDs
-    // bit reverse to make same order on LEDs as on DIP SW
-    assign led[3:0] = {sw[0],sw[1],sw[2],sw[3]};
+    // order them as physically located
+    assign led[3:0] = {sw_wifi, sw_video, sw_sdram, sw_adc};
 
     // VGA signal generator
     wire VGA_DE;
@@ -169,6 +176,7 @@ module top_memtest_emi
     vgaout showrez
     (
         .clk(clk_pixel),
+        .clk_en(sw_video),
         .rez1(passcount),
         .rez2(failcount),
         .freq(S_phase),
@@ -194,6 +202,7 @@ module top_memtest_emi
     (
       .clk_pixel(clk_pixel),
       .clk_shift(clk_shift),
+      .clk_en(sw_video),
       .in_red(vga_r),
       .in_green(vga_g),
       .in_blue(vga_b),
@@ -208,7 +217,9 @@ module top_memtest_emi
 
   reg dvi_out_reset;
   always @(posedge clk_shift)
-    dvi_out_reset <= ~sw[1]; // DIP SW 2 enables GPDI
+    dvi_out_reset <= ~sw_video; // DIP SW 2 enables GPDI
+
+  // GPDI differential output
   generate
     if(C_ddr)
     begin

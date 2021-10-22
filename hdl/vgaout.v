@@ -4,6 +4,7 @@
 module vgaout
 (
 	input clk,
+	input clk_en,
 
 	input [31:0] rez1,
 	input [31:0] rez2,
@@ -65,7 +66,9 @@ hexnum digs
 
 wire mpix = ({xr[2],xr[1]|xr[0]} <= 2) && ((vcount>>3) == (VREZ4>>3)) && r4[7];
 
-always @(posedge clk) begin
+always @(posedge clk) 
+if(clk_en)
+begin
 
 	if (hcount==HMAX) hcount <= 9'd0;
 		else hcount <= hcount + 9'd1;

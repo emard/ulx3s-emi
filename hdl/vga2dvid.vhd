@@ -56,6 +56,7 @@ entity vga2dvid is
 	Port (
 		clk_pixel    : in STD_LOGIC; -- VGA pixel clock, 25 MHz for 640x480
 		clk_shift    : in STD_LOGIC; -- SDR: 10x clk_pixel, DDR: 5x clk_pixel, in phase with clk_pixel
+		clk_en       : in STD_LOGIC;
 		in_red       : in STD_LOGIC_VECTOR (c_depth-1 downto 0);
 		in_green     : in STD_LOGIC_VECTOR (c_depth-1 downto 0);
 		in_blue      : in STD_LOGIC_VECTOR (c_depth-1 downto 0);
@@ -110,6 +111,7 @@ begin
 	process(clk_pixel)
 	begin
 		if rising_edge(clk_pixel) then
+		if clk_en = '1' then
 			-- does 0 to 1 transition at bits 5 downto 4 happen at rising_edge of clk_pixel?
 			-- if shift_clock = c_shift_clock_initial then
 			if shift_clock(5 downto 4) = c_shift_clock_initial(5 downto 4) then -- same as above line but simplified
@@ -118,11 +120,13 @@ begin
 				R_shift_clock_off_sync <= '1';
 			end if;
 		end if;
+		end if;
 	end process;
 	-- every N cycles of clk_shift: signal to skip 1 cycle in order to get in sync
 	process(clk_shift)
 	begin
 		if rising_edge(clk_shift) then
+		if clk_en = '1' then
 			if R_shift_clock_off_sync = '1' then
 				if R_shift_clock_synchronizer(R_shift_clock_synchronizer'high) = '1' then
 					R_shift_clock_synchronizer <= (others => '0');
@@ -132,6 +136,7 @@ begin
 			else
 				R_shift_clock_synchronizer <= (others => '0');
 			end if;
+		end if;
 		end if;
 	end process;
 	end generate; -- shift_clock_synchronizer
@@ -159,6 +164,7 @@ begin
 	process(clk_shift)
 	begin
 		if rising_edge(clk_shift) then
+		if clk_en = '1' then
 		--if shift_clock = "0000011111" then
 		if shift_clock(5 downto 4) = c_shift_clock_initial(5 downto 4) then -- same as above line but simplified
 			shift_red <= latched_red;
@@ -182,6 +188,7 @@ begin
 			end if;
 		end if;
 		end if;
+		end if;
 	end process;
 	end generate;
 
@@ -189,6 +196,7 @@ begin
 	process(clk_shift)
 	begin
 		if rising_edge(clk_shift) then 
+		if clk_en = '1' then
 		--if shift_clock = "0000011111" then
 		if shift_clock(5 downto 4) = c_shift_clock_initial(5 downto 4) then -- same as above line but simplified
 			shift_red   <= latched_red;
@@ -210,6 +218,7 @@ begin
 			else
 				R_sync_fail <= R_sync_fail + 1;
 			end if;
+		end if;
 		end if;
 		end if;
 	end process;

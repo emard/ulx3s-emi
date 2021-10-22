@@ -209,13 +209,14 @@ module top_memtest_emi
     // VGA signal generator
     wire vga_hsync, vga_vsync, vga_de;
     wire [1:0] vga_r, vga_g, vga_b;
+    reg [15:0] adc_data_hold;
     vgaout showrez
     (
         .clk(clk_pixel),
         .clk_en(sw_video),
         .rez1(passcount),
         .rez2(failcount),
-        .elapsed(adc_data[11:0]), // ADC CH0 value in HEX
+        .elapsed(adc_data_hold), // ADC CH0 value in HEX
         .freq(S_phase),
         .hs(vga_hsync),
         .vs(vga_vsync),
@@ -225,6 +226,11 @@ module top_memtest_emi
         .b(vga_b)
     );
     wire vga_blank = ~vga_de;
+
+    always @(posedge clk_pixel)
+      if(sw_adc)
+        if(adc_dv && vga_vsync)
+          adc_data_hold <= adc_data[11:0];
 
     // VGA to digital video converter
     wire [1:0] tmds[3:0];

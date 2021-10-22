@@ -6,3 +6,5 @@ With DIP SW enable:
 |  :---:  |  :---:  |  :---:  |  :---:  |
 |&#x1F7E6;|&#x1f7e9;|&#x1f7e7;|&#x1f7e5;|
 |  ESP32  |  GPDI   |  SDRAM  |   ADC   |
+
+To test ADC press BTN1 or BTN2.

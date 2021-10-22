@@ -159,15 +159,15 @@ module top_memtest_emi
     );
     // these GP/GN pairs are connected to ADC differential channels 0,1,2,3
     // ADC and GP/GN polarity is swapped
-    // press BTN1 and watch ADC reding (first 4 hex, yellow)
-    assign gp[14] = ~btn[1]; // CH0-
-    assign gn[14] =  btn[1]; // CH0+
-    assign gp[15] = ~btn[1]; // CH1-
-    assign gn[15] =  btn[1]; // CH1+
-    assign gp[16] = ~btn[1]; // CH2-
-    assign gn[16] =  btn[1]; // CH2+
-    assign gp[17] = ~btn[1]; // CH3-
-    assign gn[17] =  btn[1]; // CH3+
+    // press BTN1,2 and watch ADC reding (first 4 hex, yellow)
+    assign gp[14] =  btn[1]; // CH0-
+    assign gn[14] =  btn[2]; // CH0+
+    assign gp[15] =  btn[1]; // CH1-
+    assign gn[15] =  btn[2]; // CH1+
+    assign gp[16] =  btn[1]; // CH2-
+    assign gn[16] =  btn[2]; // CH2+
+    assign gp[17] =  btn[1]; // CH3-
+    assign gn[17] =  btn[2]; // CH3+
 ///////////////////////////////////////////////////////////////////
 
     // SDRAM TEST

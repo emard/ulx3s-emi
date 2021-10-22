@@ -1,0 +1,50 @@
+# SDRAM test clock
+# ******* project, board and chip name *******
+PROJECT = memtest_emi
+BOARD = ulx3s
+# 12 25 45 85
+FPGA_SIZE = 12
+
+# ******* if programming with OpenOCD *******
+# using local latest openocd until in linux distribution
+OPENOCD=openocd_ft232r
+# default onboard usb-jtag
+OPENOCD_INTERFACE=$(SCRIPTS)/ft231x.ocd
+# ulx3s-jtag-passthru
+#OPENOCD_INTERFACE=$(SCRIPTS)/ft231x2.ocd
+# ulx2s
+#OPENOCD_INTERFACE=$(SCRIPTS)/ft232r.ocd
+# external jtag
+#OPENOCD_INTERFACE=$(SCRIPTS)/ft2232.ocd
+
+
+# ******* design files *******
+#CONSTRAINTS = ../constraints/ulx3s_v20.lpf
+CONSTRAINTS = ../constraints/ulx3s_v316.lpf
+TOP_MODULE = top_memtest_emi
+TOP_MODULE_FILE = ../hdl/top/$(TOP_MODULE).v
+
+VERILOG_FILES = \
+  $(TOP_MODULE_FILE) \
+  ../hdl/ecp5pll.sv \
+  ../hdl/rnd_vec_gen.v \
+  ../hdl/sdram_control.v \
+  ../hdl/mem_tester.v \
+  ../hdl/vgaout.v \
+  ../hdl/btn_ecp5pll_phase.v \
+
+# *.vhd those files will be converted to *.v files with vhdl2vl (warning overwriting/deleting)
+VHDL_FILES = \
+  ../hdl/vga2dvid.vhd \
+  ../hdl/tmds_encoder.vhd
+
+# synthesis options
+YOSYS_OPTIONS = -abc9
+#NEXTPNR_OPTIONS = --timing-allow-fail
+NEXTPNR_OPTIONS = --router router2 --timing-allow-fail --ignore-loops
+#NEXTPNR_OPTIONS = --timing-allow-fail --ignore-loops
+
+SCRIPTS = ../scripts
+include $(SCRIPTS)/diamond_path.mk
+include $(SCRIPTS)/trellis_path.mk
+include $(SCRIPTS)/trellis_main.mk

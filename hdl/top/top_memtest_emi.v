@@ -140,7 +140,7 @@ module top_memtest_emi
 
     reg resetn;
     always @(posedge clk_sdram) // FIXME should we use hardware 25 MHz here?
-        resetn <= btn[0] & clk_sdram_locked;
+        resetn <= sw_sdram & clk_sdram_locked;
 
     defparam my_memtst.DRAM_COL_SIZE = C_size_MB == 64 ? 10 : C_size_MB == 32 ? 9 : 8; // 8:8-16MB 9:32MB 10:64MB
     defparam my_memtst.DRAM_ROW_SIZE = C_size_MB > 8 ? 13 : 12; // 12:8MB 13:>=16MB

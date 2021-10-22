@@ -93,6 +93,7 @@ OPENFPGALOADER ?= openFPGALoader
 FLEAFPGA_JTAG ?= FleaFPGA-JTAG 
 OPENOCD ?= openocd
 OPENOCD_INTERFACE ?= $(SCRIPTS)/ft231x.ocd
+DFU_UTIL ?= dfu-util
 TINYFPGASP ?= tinyfpgasp
 
 # helper scripts directory
@@ -128,7 +129,7 @@ VHDL_TO_VERILOG_FILES = $(VHD2VL_FILES:.vhd=.v)
 $(PROJECT).json: $(VERILOG_FILES) $(VHDL_TO_VERILOG_FILES) $(VHDL_FILES)
 	$(YOSYS) \
 	-p "ghdl --ieee=synopsys --std=08 -fexplicit -frelaxed-rules $(VHDL_FILES) -e $(TOP_VHDL_MODULE)" \
-	-p "read_verilog -sv $(VERILOG_FILES) $(VHDL_TO_VERILOG_FILES)" \
+	-p "read_verilog -sv $(VERILOG_FILES)" \
 	-p "hierarchy -top ${TOP_MODULE}" \
 	-p "synth_ecp5 ${YOSYS_OPTIONS} -json ${PROJECT}.json"
 
@@ -173,7 +174,7 @@ $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).vme: $(BOARD)_$(FPGA_SIZE)f.xcf $(BOARD)_$(FPG
 $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).svf: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).config
 	$(ECPPACK) $(IDCODE_CHIPID) $< --compress --freq 62.0 --svf-rowsize 800000 --svf $@
 
-# program SRAM  with ujrprog (temporary)
+# program SRAM with ujrprog (temporary)
 prog: program
 program: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit
 	$(UJPROG) $<
@@ -183,13 +184,22 @@ prog_ofl: program_ofl
 program_ofl: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit
 	$(OPENFPGALOADER) -b ulx3s $<
 
-# program SRAM  with FleaFPGA-JTAG (temporary)
+# program SRAM with FleaFPGA-JTAG (temporary)
 program_flea: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).vme
 	$(FLEAFPGA_JTAG) $<
 
-# program FLASH over US1 port with ujprog bootloader (permanently)
+# program FLASH over US1 port with ujprog (permanently)
 flash: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit
 	$(UJPROG) -j flash $<
+
+# program FLASH over US1 port with openFPGALoader (permanently)
+flash_ofl: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit
+	$(OPENFPGALOADER) $(OPENFPGALOADER_OPTIONS) -f $<
+
+# program FLASH over US2 port with DFU bootloader (permanently)
+flash_dfu: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit
+	$(DFU_UTIL) -a 0 -D $<
+	$(DFU_UTIL) -a 0 -e
 
 # program FLASH over US2 port with tinyfpgasp bootloader (permanently)
 flash_tiny: $(BOARD)_$(FPGA_SIZE)f_$(PROJECT).bit

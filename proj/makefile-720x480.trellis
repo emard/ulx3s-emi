@@ -23,21 +23,26 @@ OPENOCD_INTERFACE=$(SCRIPTS)/ft231x.ocd
 CONSTRAINTS = ../constraints/ulx3s_v316.lpf
 TOP_MODULE = top_memtest_emi
 TOP_MODULE_FILE = ../hdl/top/$(TOP_MODULE).v
-TOP_VHDL_MODULE = vga2dvid
+TOP_VHDL_MODULE = max1112x_reader
 
 VERILOG_FILES = \
-  $(TOP_MODULE_FILE) \
-  ../hdl/ecp5pll.sv \
-  ../hdl/rnd_vec_gen.v \
-  ../hdl/sdram_control.v \
-  ../hdl/mem_tester.v \
-  ../hdl/vgaout.v \
-  ../hdl/btn_ecp5pll_phase.v \
+$(TOP_MODULE_FILE) \
+../hdl/ecp5pll.sv \
+../hdl/rnd_vec_gen.v \
+../hdl/sdram_control.v \
+../hdl/mem_tester.v \
+../hdl/vgaout.v \
+../hdl/btn_ecp5pll_phase.v \
 
 # *.vhd those files will be converted to *.v files with vhdl2vl (warning overwriting/deleting)
-VHDL_FILES = \
-  ../hdl/vga2dvid.vhd \
-  ../hdl/tmds_encoder.vhd
+VHD2VL_FILES = \
+../hdl/vga2dvid.vhd \
+../hdl/tmds_encoder.vhd \
+
+VHDL_FILES = $(VHD2VL_FILES)
+#VHDL_FILES = \
+#../hdl/max1112x_init_pack.vhd \
+#../hdl/max1112x_reader_array.vhd \
 
 # synthesis options
 YOSYS_OPTIONS = -abc9
@@ -48,4 +53,4 @@ NEXTPNR_OPTIONS = --router router2 --timing-allow-fail --ignore-loops
 SCRIPTS = ../scripts
 include $(SCRIPTS)/diamond_path.mk
 include $(SCRIPTS)/trellis_path.mk
-include $(SCRIPTS)/trellis_main_ghdl.mk
+include $(SCRIPTS)/trellis_main.mk

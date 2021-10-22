@@ -1,6 +1,6 @@
 # SDRAM test clock
 # ******* project, board and chip name *******
-PROJECT = memtest
+PROJECT = memtest_emi
 BOARD = ulx3s
 # 12 25 45 85
 FPGA_SIZE = 12
@@ -29,17 +29,19 @@ TOP_MODULE = top_memtest_emi
 TOP_MODULE_FILE = ../hdl/top/$(TOP_MODULE).v
 
 VERILOG_FILES = \
-  $(TOP_MODULE_FILE) \
-  ../hdl/ecp5pll.sv \
-  ../hdl/rnd_vec_gen.v \
-  ../hdl/sdram_control.v \
-  ../hdl/mem_tester.v \
-  ../hdl/vgaout.v \
-  ../hdl/btn_ecp5pll_phase.v \
+$(TOP_MODULE_FILE) \
+../hdl/ecp5pll.sv \
+../hdl/rnd_vec_gen.v \
+../hdl/sdram_control.v \
+../hdl/mem_tester.v \
+../hdl/vgaout.v \
+../hdl/btn_ecp5pll_phase.v \
 
 VHDL_FILES = \
-  ../hdl/vga2dvid.vhd \
-  ../hdl/tmds_encoder.vhd
+../hdl/vga2dvid.vhd \
+../hdl/tmds_encoder.vhd \
+../hdl/max1112x_init_pack.vhd \
+../hdl/max1112x_reader_array.vhd \
 
 SCRIPTS = ../scripts
 include $(SCRIPTS)/trellis_path.mk

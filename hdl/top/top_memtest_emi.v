@@ -41,6 +41,7 @@ module top_memtest_emi
     output [27:0] gp, gn,
 
     output        wifi_en,
+    output        wifi_gpio0,
     output        wifi_rxd,
     input         wifi_txd,
     output        ftdi_rxd,
@@ -71,6 +72,7 @@ module top_memtest_emi
 
     // ESP32 simple passthru
     assign wifi_en    = sw_wifi;
+    assign wifi_gpio0 = 1;
     assign wifi_rxd   = ftdi_txd;
     assign ftdi_rxd   = wifi_txd;
 

@@ -37,6 +37,8 @@ module top_memtest_emi
 
     output        adc_sclk, adc_csn, adc_mosi,
     input         adc_miso,
+    
+    output [27:0] gp, gn,
 
     output        wifi_en,
     output        wifi_rxd,
@@ -155,14 +157,17 @@ module top_memtest_emi
         .dv(adc_dv),
         .data(adc_data)
     );
-    /*
-    reg [4*12-1:0] adc_data_valid;
-    always @(posedge clk_adc)
-      if(sw_adc)
-        if(adc_dv)
-          adc_data_valid <= adc_data;
-    assign led[7:4] = adc_data_valid[3:0];
-    */
+    // these GP/GN pairs are connected to ADC differential channels 0,1,2,3
+    // ADC and GP/GN polarity is swapped
+    // press BTN1 and watch ADC reding (first 4 hex, yellow)
+    assign gp[14] = ~btn[1]; // CH0-
+    assign gn[14] =  btn[1]; // CH0+
+    assign gp[15] = ~btn[1]; // CH1-
+    assign gn[15] =  btn[1]; // CH1+
+    assign gp[16] = ~btn[1]; // CH2-
+    assign gn[16] =  btn[1]; // CH2+
+    assign gp[17] = ~btn[1]; // CH3-
+    assign gn[17] =  btn[1]; // CH3+
 ///////////////////////////////////////////////////////////////////
 
     // SDRAM TEST
@@ -209,6 +214,7 @@ module top_memtest_emi
         .clk_en(sw_video),
         .rez1(passcount),
         .rez2(failcount),
+        .elapsed(adc_data[11:0]), // ADC CH0 value in HEX
         .freq(S_phase),
         .hs(vga_hsync),
         .vs(vga_vsync),

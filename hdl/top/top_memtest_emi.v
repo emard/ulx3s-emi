@@ -15,7 +15,7 @@
 
 // counter on screen will increase immediately when BTN is pressed
 // phase shift will be applied when BTN is released
-
+`default_nettype none
 module top_memtest_emi
 (
     input         clk_25mhz,
@@ -34,6 +34,10 @@ module top_memtest_emi
     output  [1:0] sdram_ba,   // SDRAM bank-address
     output  [1:0] sdram_dqm,  // byte select
     inout  [15:0] sdram_d,    // data bus to/from SDRAM	
+
+    output        adc_sclk, adc_csn, adc_mosi,
+    input         adc_miso,
+
     output        wifi_en,
     output        wifi_rxd,
     input         wifi_txd,
@@ -91,6 +95,7 @@ module top_memtest_emi
     wire clk_adc   = clk_pixel;
 
     wire [7:0] S_phase;
+    wire S_phasedir, S_phasestep, S_phaseloadreg;
     btn_ecp5pll_phase
     #(
       .c_debounce_bits(16)
@@ -133,6 +138,31 @@ module top_memtest_emi
     always @(posedge clk_gui) // FIXME should we use hardware 25 MHz here?
         timer_reset <= ~(btn[0] & clk_video_locked);
 
+    // ADC TEST
+    wire adc_dv;
+    wire [4*12-1:0] adc_data;
+
+    max1112x_reader
+    max1112x_reader_inst
+    (
+        .clk(clk_adc),
+        .clken(sw_adc),
+        .reset(1'b0),
+        .spi_csn(adc_csn),
+        .spi_clk(adc_sclk),
+        .spi_mosi(adc_mosi),
+        .spi_miso(adc_miso),
+        .dv(adc_dv),
+        .data(adc_data)
+    );
+    /*
+    reg [4*12-1:0] adc_data_valid;
+    always @(posedge clk_adc)
+      if(sw_adc)
+        if(adc_dv)
+          adc_data_valid <= adc_data;
+    assign led[7:4] = adc_data_valid[3:0];
+    */
 ///////////////////////////////////////////////////////////////////
 
     // SDRAM TEST
@@ -165,13 +195,13 @@ module top_memtest_emi
 
     // most important info is failcount - lower 8 bits shown on LEDs
     //assign led = failcount[7:0];
-    assign led[7:4] = 0;
+    //assign led[7:4] = 0;
     // show DIP SW position on LEDs
     // order them as physically located
     assign led[3:0] = {sw_wifi, sw_video, sw_sdram, sw_adc};
 
     // VGA signal generator
-    wire VGA_DE;
+    wire vga_hsync, vga_vsync, vga_de;
     wire [1:0] vga_r, vga_g, vga_b;
     vgaout showrez
     (
@@ -182,12 +212,12 @@ module top_memtest_emi
         .freq(S_phase),
         .hs(vga_hsync),
         .vs(vga_vsync),
-        .de(VGA_DE),
+        .de(vga_de),
         .r(vga_r),
         .g(vga_g),
         .b(vga_b)
     );
-    assign vga_blank = ~VGA_DE;
+    wire vga_blank = ~vga_de;
 
     // VGA to digital video converter
     wire [1:0] tmds[3:0];
@@ -241,3 +271,4 @@ module top_memtest_emi
   endgenerate
 
 endmodule
+`default_nettype wire
